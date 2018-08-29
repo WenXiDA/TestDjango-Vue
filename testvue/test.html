@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>  
+    <title>首页</title>
+  </head>
+  <body>
+    <div id="app">
+	    <li v-for="item in items">
+	        {{item.name}}
+	    </li>
+
+      <div v-if="previousPage">
+        <button v-bind:value="previousPage" v-on:click="page=previousPage"  @click="getModel()">
+          previous
+        </button>
+      </div>
+
+      <div v-if="nextPage">
+        <button v-bind:value="nextPage"  v-on:click="page=nextPage" @click="getModel()">
+          next
+        </button>
+      </div>
+    </div>
+  </body>
+  <script type="text/javascript">
+  	var vm = new Vue({
+  		el:'#app',
+  		data:{
+  			items:[
+        ],
+        site:"LSY",
+        nextPage:"",
+        previousPage:"",
+        page:"http://localhost:8888/test/",
+  		},
+  		methods: {
+        getModel(){
+          var _this = this;
+        	axios.get(_this.page).then(function(rsp){
+        		console.log(rsp);
+        		_this.items = rsp.data.results;
+            _this.nextPage = rsp.data.next;
+            _this.previousPage = rsp.data.previous;
+            console.log(_this.previousPage);
+            console.log(_this.page);
+            console.log(_this.nextPage);
+        	}).catch(function(error){
+        		console.log(error);
+        	});
+        },
+      },
+      created(){
+      	this.getModel();
+    	},
+  	})
+  </script>
+</html>
